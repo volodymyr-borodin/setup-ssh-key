@@ -1,0 +1,33 @@
+name: 'Setup SSH'
+description: 'Setup private key and add host to known hosts'
+branding:
+  icon: 'terminal'
+  color: 'gray-dark'
+
+inputs:
+  private-key:
+    description: 'Private key required to access the host'
+    required: true
+  host:
+    description: 'Hostname or IP to add to the known hosts file'
+    required: true
+
+outputs:
+  private-key-path:
+    description: 'path to private key'
+    value: ${{ steps.setup-output.outputs.private-key-path }}
+
+runs:
+  using: 'composite'
+  steps: 
+    - name: Create SSH key
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ inputs.private-key }}" > ../private.key
+        sudo chmod 600 ../private.key
+        echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
+      shell: bash
+    - name: Setup output
+      id: setup-output
+      run: echo "::set-output name=private-key-path::$(echo ${{ github.workspace }}/../private.key)"
+      shell: bash
