@@ -1,4 +1,4 @@
-name: 'Setup SSH'
+name: 'Setup SSH key'
 description: 'Setup private key and add host to known hosts'
 branding:
   icon: 'terminal'
