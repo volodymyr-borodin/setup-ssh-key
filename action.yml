@@ -8,9 +8,13 @@ inputs:
   private-key:
     description: 'Private key required to access the host'
     required: true
+  private-key-name:
+    description: 'Name of the key'
+    default: 'id_rsa'
+    required: false
   known-hosts:
     description: 'Hostname or IP to add to the known hosts file'
-    required: true
+    required: false
 
 outputs:
   private-key-path:
@@ -20,14 +24,14 @@ outputs:
 runs:
   using: 'composite'
   steps: 
-    - name: Create SSH key
-      run: |
+    - run: |
         mkdir -p ~/.ssh/
-        echo "${{ inputs.private-key }}" > ../private.key
-        sudo chmod 600 ../private.key
-        echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
+        echo "${{ inputs.private-key }}" > ~/.ssh/${{ inputs.private-key-name }}
+        chmod 600 ~/.ssh/${{ inputs.private-key-name }}
       shell: bash
-    - name: Setup output
-      id: setup-output
-      run: echo "::set-output name=private-key-path::$(echo ${{ github.workspace }}/../private.key)"
+    - run: echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
+      if: "${{ inputs.inputs.known-hosts != '' }}"
+      shell: bash
+    - id: setup-output
+      run: echo "::set-output name=private-key-path::$(echo ~/.ssh/${{ inputs.private-key-name }})"
       shell: bash
