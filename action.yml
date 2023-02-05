@@ -31,7 +31,8 @@ runs:
         chmod 600 ~/.ssh/${{ inputs.private-key-name }}
       shell: bash
     - run: echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
-      if: "${{ inputs.inputs.known-hosts != '' }}"
+      if: "${{ inputs.known-hosts != '' }}"
       shell: bash
-    - run: echo "{private-key-path}=$(echo ~/.ssh/${{ inputs.private-key-name }}" >> $GITHUB_OUTPUT
+    - run: echo "private-key-path=$(echo ~/.ssh/${{ inputs.private-key-name }})" >> $GITHUB_OUTPUT
+      id: setup-output
       shell: bash
